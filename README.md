@@ -145,6 +145,81 @@ new Promise( ( resolve, reject ) => {
 } );
 ```
 
+### Example that contains also .catch
+```javascript
+const prom = new Promise( ( resolve, reject ) => { 
+    setTimeout( ( ) => resolve(3), 3000 );
+} )
+
+prom
+    .then( ( data ) => console.log( "First Then ", data) )
+    .then( ( data ) => {
+        console.log( "Second Then ", data );
+        return Promise.reject( "reject" );
+    } )
+    .then( ( success ) => console.log ("Third Then ", success ) )
+    .catch( ( error ) => console.log( "Catch ", error ) )
+//Result
+//First Then 3
+//Second Then undefined
+//Catch reject
+```
+You might as yourself why we get Second Then with `undefined`, this is because in the Frist Then promise we don`t return any data.
+
+## Promise All
+There are times when we want to execute multiple promises and the results are not tied.
+For this case you can use promise `.all`.
+```javascript
+const promiseArray = [
+  new Promise((resolve, reject) => setTimeout(() => resolve(1), 3000)), // 1
+  new Promise((resolve, reject) => setTimeout(() => resolve(2), 2000)), // 2
+  new Promise((resolve, reject) => setTimeout(() => resolve(3), 1000))  // 3
+];
+Promise.all(promiseArray).then( data => console.log( data ) ); // [ 1, 2, 3 ] 
+```
+In case one of the promises fails( gets rejected ) the rest of the promises will be ignored and promise `.all` gets rejected aswell. Have a look at the example bellow:
+
+```javascript
+const promiseArray = [
+  new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)), // 1
+  new Promise((resolve, reject) => setTimeout(() => reject(2), 3000)), // 2
+  new Promise((resolve, reject) => setTimeout(() => reject(3), 1000))  // 3
+];
+
+Promise.all(promiseArray).then( 
+( data ) => console.log( data ),
+( err ) => console.log( err ) );
+//the result in showen in the console is: 3
+```
+## Promise Race
+There are times when you a have a list of promises to execute and you only care the result returned by the first fulfilled ( resolved ) promise. But keep in mind that if the first promise that gets settled is rejected, the `.race` will also be rejected and the value returned by the rejected promised is passed on.
+```javascript
+Promise.race([
+  new Promise((resolve, reject) => setTimeout(() => resolve(1), 3000)), // 1
+  new Promise((resolve, reject) => setTimeout(() => resolve(2), 2000)), // 2
+  new Promise((resolve, reject) => setTimeout(() => resolve(3), 1000))  // 3
+])
+.then( ( data ) => console.log( data ) ); //logs out 3
+```
+## Finally
+There will be times when you want to do some clean up after a promise or a promise chain is finshed ( fulfilled or rejected ).
+For example you want to show a spinner on the website until the api calls are finished( using promises ). You can set a flag `showSpinner = true` and after the api calls are done in the finally method you set the flag to `false` and hide the spinner.
+
+```javascript
+new Promise( ( resolve, reject ) => {
+   setTimeout(() => resolve(1), 2000);
+})
+     .then( ( data ) => {
+      console.log("First Then ", data ); // First Then 1
+      return data + 1;
+    } )
+    .then(  ( data ) => {
+      console.log("Second Then ", data ); // Second Then 2
+      return data + 1;
+    } )
+    .finally( ( ) => console.log( "I`m finally done" ) )
+```
+
 ### Resources:
 
 * https://github.com/tc39/proposal-top-level-await
