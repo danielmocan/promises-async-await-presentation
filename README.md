@@ -126,6 +126,24 @@ promise
 
 ***.then and .catch always return a Promise***
 
+## Chaining
+
+As I said a few rows above .then and .catch return a promise. This way you can chain as many promises as you want.
+You can pass the information from one promise to the other, until you have the desired result.
+
+```javascript
+new Promise( ( resolve, reject ) => {
+   setTimeout(() => resolve(1), 2000);
+})
+.then( ( data ) => {
+  console.log("First Then ", data );
+  return data + 1;
+} )
+.then(  ( data ) => {
+  console.log("Second Then ", data );
+  return data + 1;
+} );
+```
 
 ### Resources:
 
