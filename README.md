@@ -1,6 +1,6 @@
 # Promises async/await presentation
 
-## Promises
+# Promises
 
 A Promise is a proxy for a value not necessarily known when the promise is created. It allows you to associate handlers with an asynchronous action's eventual success value or failure reason.
 
@@ -220,6 +220,82 @@ new Promise( ( resolve, reject ) => {
     .finally( ( ) => console.log( "I`m finally done" ) )
 ```
 
+
+# Async / Await
+Async functions  allow you to write promise-based code as if it were synchronous, but without blocking the main thread. They make your asynchronous code less "clever" and more readable.
+
+## History
+Async / Wait was proposed as a spec back in 2014.
+Async / Await was introduced in ES2017 ( es8 ).
+It became fully supported in node 8.
+
+## Syntax
+```javascript
+const resolveAfter2Seconds = () => new Promise( resolve => {
+    setTimeout(() => {
+      console.log("resolving");
+      resolve("resolved");
+    }, 2000);
+});
+
+async function asyncCall() {
+  console.log("calling");
+  const result = await resolveAfter2Seconds();
+  console.log(result); // "resolved"
+}
+
+asyncCall();
+```
+## Funny Async / Await keywords explanation
+
+async = "Dear js runtime, the following function should return a promise. before you parse this function - please transpile it to a function that returns a promise that resolves to the so-called returned value".
+
+await = "Dear js runtime, the returned value of the next expression is not a value, but a promise that yields the desired value.
+In order to parse this expression correctly, please transpile it so that the value resolved by the original expression is used in the `.then` of that promise, and any rejection this promise may fire should be handled in the closest catch block."
+( well actually, in the error case - its the opposite. The catch block is transpiled to hook on the .catch of the promise, but thats the general idea) 
+
+## Multiple Awaits
+```javascript
+const resolveAfter2Seconds = () => new Promise( resolve => {
+    setTimeout(() => {
+      console.log("resolving");
+      resolve("resolved");
+    }, 2000);
+});
+
+async function asyncCall() {
+  console.log("calling");
+  const result = await resolveAfter2Seconds();
+  const secondResult = await resolveAfter2Seconds();
+  console.log(result); // "resolved"
+  console.log(secondResult); // "resolved"
+}
+
+asyncCall();
+```
+
+## Error Handling
+To handle the errors when using async await you have to use `try` and `catch`. If there are any error in the `try` block they will be catched in the `catch` block and any information from the try block is lost.
+
+```javascript
+const rejectAfter2Seconds = () => new Promise( ( resolve, reject ) => {
+    setTimeout(() => {
+      reject("rejected");
+    }, 2000);
+ });
+
+async function asyncCall() {
+  console.log("calling");
+  try {
+      const result = await rejectAfter2Seconds();
+      console.log( "result ", result );
+  } catch ( e ) {
+      console.log( "There was an error ", e ); //
+  }
+}
+
+asyncCall();
+```
 ### Resources:
 
 * https://github.com/tc39/proposal-top-level-await
