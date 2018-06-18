@@ -1,4 +1,4 @@
-# Promises async/await presentation
+# Promises and Async / Await presentation
 
 # Promises
 
@@ -246,14 +246,6 @@ async function asyncCall() {
 
 asyncCall();
 ```
-## Funny Async / Await keywords explanation
-
-async = "Dear js runtime, the following function should return a promise. before you parse this function - please transpile it to a function that returns a promise that resolves to the so-called returned value".
-
-await = "Dear js runtime, the returned value of the next expression is not a value, but a promise that yields the desired value.
-In order to parse this expression correctly, please transpile it so that the value resolved by the original expression is used in the `.then` of that promise, and any rejection this promise may fire should be handled in the closest catch block."
-( well actually, in the error case - its the opposite. The catch block is transpiled to hook on the .catch of the promise, but thats the general idea) 
-
 ## Multiple Awaits
 ```javascript
 const resolveAfter2Seconds = () => new Promise( resolve => {
