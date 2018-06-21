@@ -164,7 +164,7 @@ prom
 //Second Then undefined
 //Catch reject
 ```
-You might as yourself why we get Second Then with `undefined`, this is because in the Frist Then promise we don`t return any data.
+You might ask yourself why we get Second Then with `undefined`, this is because in the Frist Then promise we don`t return any data.
 
 ## Promise All
 There are times when we want to execute multiple promises and the results are not tied.
